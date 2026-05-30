@@ -47,7 +47,7 @@ def _execute_mongo(db_url: str, packed_query: str) -> List[Dict[str, Any]]:
 
 def execute_db_query(state: AgentState) -> Dict[str, Any]:
     """Routes query execution dynamically to its corresponding database engine driver."""
-    flavor = state["db_flavor"]
+    dialect = state["dialect"]
     url = state["db_url"]
     query = state["generated_query"]
     
@@ -55,13 +55,15 @@ def execute_db_query(state: AgentState) -> Dict[str, Any]:
         return {"error_message": "Execution halted: No executable query was passed to this node."}
         
     try:
-        if flavor in ["postgres", "mysql"]:
+        if dialect in ["postgres", "mysql"]:
             data_out = _execute_sql(url, query)
-        elif flavor == "mongo":
+        elif dialect == "mongo":
             data_out = _execute_mongo(url, query)
         else:
-            raise ValueError(f"Unknown driver engine: {flavor}")
-            
+            return {
+           "retry_count":3,
+            "error_message": f"Unknown driver engine: {dialect}"  
+            }
         return {
             "raw_data_result": data_out,
             "error_message": None  

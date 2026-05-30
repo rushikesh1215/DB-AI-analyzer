@@ -50,15 +50,14 @@ def check_safety(state: AgentState) -> Dict[str, Any]:
     
     prompt_template = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
-        ("human", user_prompt)
+        ("human", "{user_prompt}")
     ])
     
     chain = prompt_template | structured_llm
     
     try:
         decision: GuardrailOutput = chain.invoke({
-            "dialect":dialect,
-            "query":query,
+            "user_prompt":user_prompt,
             "schema":output
             
         })

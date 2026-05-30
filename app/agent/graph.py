@@ -66,4 +66,4 @@ workflow.add_edge("chat_formatter", END)
 workflow.add_edge("chart_formatter", END)
 
 db_agent_graph = workflow.compile()
-print(db_agent_graph.get_graph().draw_mermaid())
+# print(db_agent_graph.get_graph().draw_mermaid())
